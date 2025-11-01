@@ -8,6 +8,6 @@ namespace CalculatorForTests
 {
     internal interface IEvaluator
     {
-        double Evaluate(List<string> parsedExprassion);
+        double Evaluate(List<string> parsedExpression);
     }
 }
