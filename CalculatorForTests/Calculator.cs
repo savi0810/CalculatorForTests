@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CalculatorForTests
 {
-    internal static class Calculator
+    public static class Calculator
     {
         private static readonly IExpressionParser _parser;
         private static readonly IEvaluator _evaluator;

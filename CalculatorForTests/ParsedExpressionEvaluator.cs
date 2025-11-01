@@ -50,7 +50,7 @@ namespace CalculatorForTests
                 "+" => a + b,
                 "-" => a - b,
                 "*" => a * b,
-                "/" => b == 0 ? throw new DivideByZeroException("Деление на ноль!") : a / b,
+                "/" => b == 0 ? throw new DivideByZeroException("Деление на ноль") : a / b,
                 "^" => Math.Pow(a, b),
                 _ => throw new InvalidOperationException($"Неизвестный оператор: {token}")
             };
@@ -59,7 +59,7 @@ namespace CalculatorForTests
 
         private bool IsValidNumber(string token)
         {
-            return Regex.IsMatch(token, @"^\d+(\.\d+)?$");
+            return Regex.IsMatch(token, @"^-?\d+(\.\d+)?$");
         }
     }
 }
