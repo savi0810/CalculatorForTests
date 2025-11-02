@@ -4,11 +4,27 @@ namespace CalculatorForTests.Tests
 {
     internal static class LogInitializerTests
     {
+        private static bool _isInitialized = false;
+        private static readonly object _lockObject = new object();
+
         public static void Init()
         {
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.File("test_log.log", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
+            if (!_isInitialized)
+            {
+                lock (_lockObject)
+                {
+                    if (!_isInitialized)
+                    {
+                        Log.Logger = new LoggerConfiguration()
+                            .WriteTo.File(
+                                $"../../../LogTests/test_log.log",
+                                rollingInterval: RollingInterval.Day,
+                                shared: true) 
+                            .CreateLogger();
+                        _isInitialized = true;
+                    }
+                }
+            }
         }
     }
 }

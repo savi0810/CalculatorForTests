@@ -3,44 +3,48 @@
 using CalculatorForTests;
 using Serilog;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Xunit;
 
+[Collection("TestCollection")]
 public class ExpressionParserTests : BaseTest
 {
+    public ExpressionParserTests(TestFixture fixture) : base(fixture) {}
+
     private readonly ExpressionParser parser = new ExpressionParser();
 
     [Fact]
     public void ParseExpression_SimpleAddition_ReturnsCorrectTokens()
     {
-        Log.Information("Тест выполняется");
         var expression = "2+3";
-        var result = parser.ParseExpression(expression);
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); var result = parser.ParseExpression(expression);
         Assert.Equal(new List<string> { "2", "3", "+" }, result);
     }
 
     [Fact]
     public void ParseExpression_WithRoundBrackets_ReturnsCorrectTokens()
     {
-        Log.Information("Тест выполняется");
         var expression = "(1+2)*3";
-        var result = parser.ParseExpression(expression);
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); var result = parser.ParseExpression(expression);
         Assert.Equal(new List<string> { "1", "2", "+", "3", "*" }, result);
     }
 
     [Fact]
     public void ParseExpression_UnbalancedRoundBrackets_ThrowsException()
     {
-        Log.Information("Тест выполняется");
         var expression = "(1+2";
-        Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
     [Fact]
     public void ParseExpression_ComplexExpression_ReturnsCorrectTokens()
     {
-        Log.Information("Тест выполняется");
         var expression = "3 + 4 * (2 - 1) ^ 2 / 5.5";
-        var expectedTokens = new List<string> { "3", "4", "2", "1", "-", "2", "^", "*", "5.5", "/", "+" };
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); var expectedTokens = new List<string> { "3", "4", "2", "1", "-", "2", "^", "*", "5.5", "/", "+" };
         var result = parser.ParseExpression(expression);
         Assert.Equal(expectedTokens, result);
     }
@@ -48,9 +52,9 @@ public class ExpressionParserTests : BaseTest
     [Fact]
     public void ParseExpression_NumberWithDecimal_ReturnsCorrectToken()
     {
-        Log.Information("Тест выполняется");
         var expression = "3.1415 + 2.718";
-        var expectedTokens = new List<string> { "3.1415", "2.718", "+" };
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); var expectedTokens = new List<string> { "3.1415", "2.718", "+" };
         var result = parser.ParseExpression(expression);
         Assert.Equal(expectedTokens, result);
     }
@@ -58,9 +62,9 @@ public class ExpressionParserTests : BaseTest
     [Fact]
     public void ParseExpression_OperatorsPrecedence_ReturnsCorrectOrder()
     {
-        Log.Information("Тест выполняется");
         var expression = "2 + 3 * 4 ^ 2";
-        var expectedTokens = new List<string> { "2", "3", "4", "2","^", "*", "+"};
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); var expectedTokens = new List<string> { "2", "3", "4", "2","^", "*", "+"};
         var result = parser.ParseExpression(expression);
         Assert.Equal(expectedTokens, result);
     }
@@ -70,7 +74,8 @@ public class ExpressionParserTests : BaseTest
     [InlineData("     ")]
     public void ParseExpression_EmptyOrWhitespace_ReturnsEmptyList(string expression)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); 
         var result = parser.ParseExpression(expression);
         Assert.Empty(result);
     }
@@ -81,16 +86,18 @@ public class ExpressionParserTests : BaseTest
     [InlineData("!2 + @#$")]
     public void ParseExpression_InvalidCharacters_ThrowsException(string expression)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); 
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
     [Theory]
     [InlineData("  12  +  24 ", new[] { "12", "24", "+" })]
-    [InlineData("\t5+6\n", new[] { "5", "6" , "+"})]
+    [InlineData("\t5+6\t", new[] { "5", "6" , "+"})]
     public void ParseExpression_WithSpaces_ReturnsCorrectTokens(string expression, string[] expectedTokens)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'");
         var result = parser.ParseExpression(expression);
         Assert.Equal(expectedTokens, result);
     }
@@ -102,7 +109,8 @@ public class ExpressionParserTests : BaseTest
     [InlineData("0.0001")]
     public void ParseExpression_NumericEdgeCases_ReturnsCorrectTokens(string number)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{number}'"); 
         var result = parser.ParseExpression(number);
         Assert.Single(result);
         Assert.Equal(number, result[0]);
@@ -112,6 +120,8 @@ public class ExpressionParserTests : BaseTest
     public void ParseExpression_LargeNumber_ReturnsCorrectToken()
     {
         var largeNumber = "99999999999997777777777777";
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{largeNumber}'");
         var result = parser.ParseExpression(largeNumber);
         Assert.Single(result);
         Assert.Equal(largeNumber, result[0]);
@@ -122,9 +132,10 @@ public class ExpressionParserTests : BaseTest
     [InlineData("1+2)")]
     [InlineData("(()")]
     [InlineData("())")]
-    public void ParseExpression_UnbalancedParentheses_Throws(string expression)
+    public void ParseExpression_UnbalancedRoundBrackets_Throws(string expression)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
@@ -134,7 +145,8 @@ public class ExpressionParserTests : BaseTest
     [InlineData("4 ** 4")]
     public void ParseExpression_InvalidOperatorSequences_Throws(string expression)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
@@ -144,7 +156,8 @@ public class ExpressionParserTests : BaseTest
     [InlineData("2 3")]
     public void ParseExpression_SyntaxErrors_Throws(string expression)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 }

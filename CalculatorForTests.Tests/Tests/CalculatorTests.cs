@@ -4,10 +4,14 @@ using CalculatorForTests;
 using Serilog;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq.Expressions;
 using Xunit;
 
+[Collection("TestCollection")]
 public class CalculatorTests : BaseTest
 {
+    public CalculatorTests(TestFixture fixture) : base(fixture) { }
+
     [Theory]
     [InlineData("2+3", 5)]
     [InlineData("10-4", 6)]
@@ -15,7 +19,8 @@ public class CalculatorTests : BaseTest
     [InlineData("20/4", 5)]
     public void Calculate_BasicOperations_ReturnsExpectedResults(string expression, double expected)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); 
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -27,7 +32,8 @@ public class CalculatorTests : BaseTest
     [InlineData(" ( 2 + 3 ) * 4 ", 20)]
     public void Calculate_OperatorPrecedence_ReturnsCorrectResult(string expression, double expected)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'");
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -38,7 +44,8 @@ public class CalculatorTests : BaseTest
     [InlineData("-3*3", -9)]
     public void Calculate_NegativeNumbers_ReturnsCorrectResult(string expression, double expected)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); 
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -53,7 +60,8 @@ public class CalculatorTests : BaseTest
     [InlineData("1-999999999", -999999998)]
     public void Calculate_BorderlineCases_ReturnsExpectedResults(string expression, double expected)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); 
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -68,14 +76,17 @@ public class CalculatorTests : BaseTest
     [InlineData("2 + a")]
     public void Calculate_InvalidExpressions_ThrowsException(string expression)
     {
-        Log.Information("Тест выполняется");
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'"); 
         Assert.Throws<InvalidOperationException>(() => Calculator.Calculate(expression));
     }
 
     [Fact]
     public void Calculate_DivisionByZero_ThrowsException()
     {
-        Log.Information("Тест выполняется");
-        Assert.Throws<DivideByZeroException>(() => Calculator.Calculate("1/0"));
+        var expression = "1/0";
+        string testMethodName = GetCurrentTestMethodName();
+        LogTestStep($"Тест '{testMethodName}' выполняется с выражением '{expression}'");
+        Assert.Throws<DivideByZeroException>(() => Calculator.Calculate(expression));
     }
 }
