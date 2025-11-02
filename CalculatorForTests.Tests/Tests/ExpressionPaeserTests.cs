@@ -1,15 +1,18 @@
 ﻿namespace CalculatorForTests.Tests.Tests;
 
-using Xunit;
 using CalculatorForTests;
+using Serilog;
 using System.Collections.Generic;
+using Xunit;
 
-public class ExpressionParserTests
+public class ExpressionParserTests : BaseTest
 {
     private readonly ExpressionParser parser = new ExpressionParser();
+
     [Fact]
     public void ParseExpression_SimpleAddition_ReturnsCorrectTokens()
     {
+        Log.Information("Тест выполняется");
         var expression = "2+3";
         var result = parser.ParseExpression(expression);
         Assert.Equal(new List<string> { "2", "3", "+" }, result);
@@ -18,6 +21,7 @@ public class ExpressionParserTests
     [Fact]
     public void ParseExpression_WithRoundBrackets_ReturnsCorrectTokens()
     {
+        Log.Information("Тест выполняется");
         var expression = "(1+2)*3";
         var result = parser.ParseExpression(expression);
         Assert.Equal(new List<string> { "1", "2", "+", "3", "*" }, result);
@@ -26,6 +30,7 @@ public class ExpressionParserTests
     [Fact]
     public void ParseExpression_UnbalancedRoundBrackets_ThrowsException()
     {
+        Log.Information("Тест выполняется");
         var expression = "(1+2";
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
@@ -33,6 +38,7 @@ public class ExpressionParserTests
     [Fact]
     public void ParseExpression_ComplexExpression_ReturnsCorrectTokens()
     {
+        Log.Information("Тест выполняется");
         var expression = "3 + 4 * (2 - 1) ^ 2 / 5.5";
         var expectedTokens = new List<string> { "3", "4", "2", "1", "-", "2", "^", "*", "5.5", "/", "+" };
         var result = parser.ParseExpression(expression);
@@ -42,6 +48,7 @@ public class ExpressionParserTests
     [Fact]
     public void ParseExpression_NumberWithDecimal_ReturnsCorrectToken()
     {
+        Log.Information("Тест выполняется");
         var expression = "3.1415 + 2.718";
         var expectedTokens = new List<string> { "3.1415", "2.718", "+" };
         var result = parser.ParseExpression(expression);
@@ -51,6 +58,7 @@ public class ExpressionParserTests
     [Fact]
     public void ParseExpression_OperatorsPrecedence_ReturnsCorrectOrder()
     {
+        Log.Information("Тест выполняется");
         var expression = "2 + 3 * 4 ^ 2";
         var expectedTokens = new List<string> { "2", "3", "4", "2","^", "*", "+"};
         var result = parser.ParseExpression(expression);
@@ -62,6 +70,7 @@ public class ExpressionParserTests
     [InlineData("     ")]
     public void ParseExpression_EmptyOrWhitespace_ReturnsEmptyList(string expression)
     {
+        Log.Information("Тест выполняется");
         var result = parser.ParseExpression(expression);
         Assert.Empty(result);
     }
@@ -72,6 +81,7 @@ public class ExpressionParserTests
     [InlineData("!2 + @#$")]
     public void ParseExpression_InvalidCharacters_ThrowsException(string expression)
     {
+        Log.Information("Тест выполняется");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
@@ -80,6 +90,7 @@ public class ExpressionParserTests
     [InlineData("\t5+6\n", new[] { "5", "6" , "+"})]
     public void ParseExpression_WithSpaces_ReturnsCorrectTokens(string expression, string[] expectedTokens)
     {
+        Log.Information("Тест выполняется");
         var result = parser.ParseExpression(expression);
         Assert.Equal(expectedTokens, result);
     }
@@ -91,6 +102,7 @@ public class ExpressionParserTests
     [InlineData("0.0001")]
     public void ParseExpression_NumericEdgeCases_ReturnsCorrectTokens(string number)
     {
+        Log.Information("Тест выполняется");
         var result = parser.ParseExpression(number);
         Assert.Single(result);
         Assert.Equal(number, result[0]);
@@ -112,6 +124,7 @@ public class ExpressionParserTests
     [InlineData("())")]
     public void ParseExpression_UnbalancedParentheses_Throws(string expression)
     {
+        Log.Information("Тест выполняется");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
@@ -121,6 +134,7 @@ public class ExpressionParserTests
     [InlineData("4 ** 4")]
     public void ParseExpression_InvalidOperatorSequences_Throws(string expression)
     {
+        Log.Information("Тест выполняется");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 
@@ -130,6 +144,7 @@ public class ExpressionParserTests
     [InlineData("2 3")]
     public void ParseExpression_SyntaxErrors_Throws(string expression)
     {
+        Log.Information("Тест выполняется");
         Assert.Throws<InvalidOperationException>(() => parser.ParseExpression(expression));
     }
 }

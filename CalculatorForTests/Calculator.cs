@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 
 namespace CalculatorForTests
 {
-    public static class Calculator
+    public class Calculator
     {
-        private static readonly IExpressionParser _parser;
-        private static readonly IEvaluator _evaluator;
-
-        static Calculator()
-        {
-            _parser = new ExpressionParser();
-            _evaluator = new ParsedExpressionEvaluator();
-        }
+        private static readonly ExpressionParser _parser = new ExpressionParser();
+        private static readonly ParsedExpressionEvaluator _evaluator = new ParsedExpressionEvaluator();
 
         public static double Calculate(string expression)
         {

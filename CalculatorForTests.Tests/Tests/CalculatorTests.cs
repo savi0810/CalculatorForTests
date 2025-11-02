@@ -1,11 +1,12 @@
 ﻿namespace CalculatorForTests.Tests.Tests;
 
-using Xunit;
 using CalculatorForTests;
+using Serilog;
 using System.Collections.Generic;
 using System.Data;
+using Xunit;
 
-public class CalculatorTests
+public class CalculatorTests : BaseTest
 {
     [Theory]
     [InlineData("2+3", 5)]
@@ -14,6 +15,7 @@ public class CalculatorTests
     [InlineData("20/4", 5)]
     public void Calculate_BasicOperations_ReturnsExpectedResults(string expression, double expected)
     {
+        Log.Information("Тест выполняется");
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -25,6 +27,7 @@ public class CalculatorTests
     [InlineData(" ( 2 + 3 ) * 4 ", 20)]
     public void Calculate_OperatorPrecedence_ReturnsCorrectResult(string expression, double expected)
     {
+        Log.Information("Тест выполняется");
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -35,6 +38,7 @@ public class CalculatorTests
     [InlineData("-3*3", -9)]
     public void Calculate_NegativeNumbers_ReturnsCorrectResult(string expression, double expected)
     {
+        Log.Information("Тест выполняется");
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -49,6 +53,7 @@ public class CalculatorTests
     [InlineData("1-999999999", -999999998)]
     public void Calculate_BorderlineCases_ReturnsExpectedResults(string expression, double expected)
     {
+        Log.Information("Тест выполняется");
         var result = Calculator.Calculate(expression);
         Assert.Equal(expected, result);
     }
@@ -63,12 +68,14 @@ public class CalculatorTests
     [InlineData("2 + a")]
     public void Calculate_InvalidExpressions_ThrowsException(string expression)
     {
+        Log.Information("Тест выполняется");
         Assert.Throws<InvalidOperationException>(() => Calculator.Calculate(expression));
     }
 
     [Fact]
     public void Calculate_DivisionByZero_ThrowsException()
     {
+        Log.Information("Тест выполняется");
         Assert.Throws<DivideByZeroException>(() => Calculator.Calculate("1/0"));
     }
 }
